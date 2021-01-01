@@ -7,3 +7,5 @@ edition = "2018"
 
 [dependencies]
 dasp = {git = "https://github.com/ollpu/dasp", branch = "master", version = "0.11", features = ["all"]}
+
+ringbuf = "0.2"
