@@ -1,19 +1,19 @@
 use dasp::{interpolate::sinc::Sinc, ring_buffer, signal, Signal};
 use ringbuf::{Consumer, Producer, RingBuffer};
 
-struct AudioSrc {
+struct RingBufferSignal {
     consumer: Consumer<f32>,
 }
 
-impl AudioSrc {
-    fn new(capacity: usize) -> (AudioSrc, Producer<f32>) {
+impl RingBufferSignal {
+    fn new(capacity: usize) -> (RingBufferSignal, Producer<f32>) {
         let ring = RingBuffer::<f32>::new(capacity);
         let (producer, consumer) = ring.split();
-        (AudioSrc { consumer }, producer)
+        (RingBufferSignal { consumer }, producer)
     }
 }
 
-impl Signal for AudioSrc {
+impl Signal for RingBufferSignal {
     type Frame = f32;
 
     fn next(&mut self) -> Self::Frame {
@@ -32,7 +32,7 @@ mod tests {
 
         let sinc = Sinc::new(ring_buffer::Fixed::from([0.0f32; SINC_INTERPOLATOR_SIZE]));
 
-        let (source, mut producer) = AudioSrc::new(512);
+        let (source, mut producer) = RingBufferSignal::new(512);
 
         let mut signal = source.from_hz_to_hz(sinc, source_fs, target_fs);
 
